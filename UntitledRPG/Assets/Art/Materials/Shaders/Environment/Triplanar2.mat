@@ -75,8 +75,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlendHeight: 0
-    - _BlendThreshold: 0.5
+    - _BlendHeight: 0.5
+    - _BlendThreshold: 0.37
     - _BottomMetallic: 0
     - _BottomSmoothness: 0
     - _QueueControl: 0

@@ -1,11 +1,9 @@
-﻿using Template.Input;
+﻿using ReiBrary.UI.Controllers.Selectables;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using ReiBrary.UI.Controllers.Selectables;
+using UntitledRPG.Input;
 
-namespace Template.UI.SelectableControllers
+namespace UntitledRPG.UI.SelectableControllers
 {
     public class AdjustValueSelectableController : ASelectableController
     {

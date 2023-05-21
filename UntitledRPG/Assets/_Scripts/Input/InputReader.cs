@@ -1,9 +1,9 @@
+using ReiBrary.Input;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using ReiBrary.Input;
 
-namespace Template.Input
+namespace UntitledRPG.Input
 {
 	[CreateAssetMenu(fileName = "InputReader", menuName = "Game/Input Reader")]
     public class InputReader : ScriptableObject, GameInput.IGameplayActions, GameInput.IMenuActions, IInputReader
@@ -13,8 +13,8 @@ namespace Template.Input
 		#region Gameplay Events
 		
         public event UnityAction<Vector2> MoveEvent = delegate { };
-        public event UnityAction ExampleEvent = delegate { };
-        public event UnityAction ExampleCancelledEvent = delegate { };
+        public event UnityAction JumpEvent = delegate { };
+        public event UnityAction JumpCancelledEvent = delegate { };
 
         #endregion
 
@@ -40,8 +40,8 @@ namespace Template.Input
 				_gameInput.Menu.SetCallbacks(this);
 
 				// Default
-				// EnableGameplayInput();
-                EnableMenuInput();
+				EnableGameplayInput();
+                // EnableMenuInput();
 			}
         }
 
@@ -69,24 +69,23 @@ namespace Template.Input
             MoveEvent.Invoke(context.ReadValue<Vector2>());
         }
 
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            switch (context.phase)
+            {
+                case InputActionPhase.Performed:
+                    JumpEvent.Invoke();
+                    break;
+                case InputActionPhase.Canceled:
+                    JumpCancelledEvent.Invoke();
+                    break;
+            }
+        }
+
         public void OnPause(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Performed)
                 MenuPauseEvent.Invoke();
-        }
-
-        // TODO: Remove
-        public void OnExample(InputAction.CallbackContext context)
-        {
-            switch (context.phase)
-		    {
-			    case InputActionPhase.Performed:
-				    ExampleEvent.Invoke();
-				    break;
-			    case InputActionPhase.Canceled:
-				    ExampleCancelledEvent.Invoke();
-				    break;
-		    }
         }
 
         #endregion

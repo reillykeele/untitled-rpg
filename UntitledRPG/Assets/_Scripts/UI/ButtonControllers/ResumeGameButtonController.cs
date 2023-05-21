@@ -1,7 +1,7 @@
 using ReiBrary.Systems;
 using ReiBrary.UI.Controllers.Selectables.Buttons;
 
-namespace Template.UI.ButtonControllers
+namespace UntitledRPG.UI.ButtonControllers
 {
     public class ResumeGameButtonController : AButtonController
     {

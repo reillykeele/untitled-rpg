@@ -1,12 +1,12 @@
-using Template.Input;
-using UnityEngine;
-using UnityEngine.InputSystem;
 using ReiBrary.Audio;
 using ReiBrary.Systems;
 using ReiBrary.UI;
 using ReiBrary.UI.Controllers;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UntitledRPG.Input;
 
-namespace UI.UIControllers
+namespace UntitledRPG.UI.UIControllers
 {
     public class StartMenuUIController : UIController
     {

@@ -1,7 +1,7 @@
 using ReiBrary.UI;
 using ReiBrary.UI.Controllers.Selectables.Buttons;
 
-namespace Template.UI.ButtonControllers
+namespace UntitledRPG.UI.ButtonControllers
 {
     public class ChangeUIPageButtonController : AButtonController
     {

@@ -1,10 +1,10 @@
-using UnityEngine;
-using UnityEngine.EventSystems;
 using ReiBrary.Audio;
 using ReiBrary.Systems;
 using ReiBrary.UI.Controllers.Selectables;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace Template.UI.SelectableControllers
+namespace UntitledRPG.UI.SelectableControllers
 {
     public class PlaySoundOnSelectSelectableController : ASelectableController
     {

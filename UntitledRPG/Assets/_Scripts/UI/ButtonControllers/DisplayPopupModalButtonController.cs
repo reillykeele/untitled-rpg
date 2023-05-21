@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using ReiBrary.UI;
+﻿using ReiBrary.UI;
 using ReiBrary.UI.Controllers.Selectables.Buttons;
 using ReiBrary.UI.Modals;
+using UnityEngine;
+using UnityEngine.Events;
 
-namespace Template.UI.ButtonControllers
+namespace UntitledRPG.UI.ButtonControllers
 {
     public class DisplayPopupModalButtonController : AButtonController
     {

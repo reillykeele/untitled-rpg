@@ -2,7 +2,7 @@ using ReiBrary.Helpers;
 using ReiBrary.Systems;
 using ReiBrary.UI.Controllers.Selectables.Buttons;
 
-namespace Template.UI.ButtonControllers
+namespace UntitledRPG.UI.ButtonControllers
 {
     public class ChangeSceneButtonController : AButtonController
     {

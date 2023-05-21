@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.EventSystems;
-using ReiBrary.Enums;
+﻿using ReiBrary.Enums;
 using ReiBrary.Systems;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-namespace Template.UI.SelectableControllers
+namespace UntitledRPG.UI.SelectableControllers
 {
     public class AdjustMusicValueSelectableController : AdjustValueSelectableController
     {
