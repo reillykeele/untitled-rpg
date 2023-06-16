@@ -1,13 +1,40 @@
+using System.Linq;
+using System.Numerics;
 using ReiBrary.Attributes;
 using ReiBrary.Extensions;
+using ReiBrary.Helpers;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UntitledRPG.Input;
+using static UnityEngine.Rendering.DebugUI.Table;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace UntitledRPG.Actor
 {
-    [RequireComponent(typeof(CharacterController))]
+    // [RequireComponent(typeof(CharacterController))]
     public class PlayerMovementController : MonoBehaviour
     {
+        private class GroundedState
+        {
+            public bool IsGrounded { get; }
+            public Vector3 GroundNormal { get; }
+            public Vector3 GroundHitPosition { get; }
+            public float GroundDistance { get; }
+            public GameObject Ground { get; }
+
+            public GroundedState() { }
+            public GroundedState(bool isGrounded, Vector3 groundNormal, Vector3 groundHitPosition, float groundDistance, GameObject ground)
+            {
+                IsGrounded = isGrounded;
+                GroundNormal = groundNormal;
+                GroundHitPosition = groundHitPosition;
+                GroundDistance = groundDistance;
+                Ground = ground;
+            }
+        }
+
         [SerializeField] private InputReader _input = default;
 
         [Header("Movement")]
@@ -15,9 +42,12 @@ namespace UntitledRPG.Actor
         [SerializeField, Min(0f)] private float _moveSpeed = 5.0f;
         [SerializeField, Min(0f)] private float _coyoteTime = 0.1f;
         [SerializeField, Min(0f)] private float _jumpBuffer = 0.1f;
-        [SerializeField, Min(0f)] private float _jumpHeight = 5f;
-        [SerializeField, Min(0f)] private float _constGravity = 0.1f;
+        [SerializeField, Min(0f)] private float _jumpVelocity = 5f;
+        [SerializeField, Min(0f)] private float _gravity = 0.1f;
         [SerializeField, Min(0f)] private float _maxFallSpeed = 5f;
+        [SerializeField, Min(0f)] private float _maxSlopeAngle = 30f;
+        [SerializeField, Min(0f)] private float _groundCheckDist = 0.1f;
+        [SerializeField] private bool _useVariableJump = true;
 
         [Header("Animation")]
         [SerializeField, Range(0, 1f)] private float _startAnimTime = 0.3f;
@@ -25,7 +55,9 @@ namespace UntitledRPG.Actor
 
         // Components
         [HideInInspector] public Animator _anim;
-        private CharacterController _controller;
+        // private CharacterController _controller;
+        private Rigidbody _rb;
+        private CapsuleCollider _collider;
         private Camera _camera;
 
         // Inputs
@@ -35,27 +67,34 @@ namespace UntitledRPG.Actor
 
         // State
         [SerializeField, ReadOnly] public bool AllowMovement = true;
-        [SerializeField, ReadOnly] public Vector3 Velocity;
         [SerializeField, ReadOnly] private Vector3 _lastPosition;
         [SerializeField, ReadOnly] private float _timeSinceGrounded;
         [SerializeField, ReadOnly] private bool _endJumpEarly;
 
-        public bool IsGrounded => _isGrounded;
-        public bool IsFalling => IsGrounded == false && Velocity.y < -0.5f;
-        public bool IsJumping => IsGrounded == false && Velocity.y >  0.5f;
+        [Debuggable] public Vector3 Velocity { get; private set; }
+        [Debuggable] public float TimeSinceGrounded => _timeSinceGrounded;
+        [Debuggable] public bool IsGrounded => _groundedState.IsGrounded; //&& Vector3.Angle(_groundedState.GroundNormal, Vector3.up) <= _maxSlopeAngle;
+        [Debuggable] public bool IsSliding => _groundedState.IsGrounded && Vector3.Angle(_groundedState.GroundNormal, Vector3.up) > _maxSlopeAngle;
+        [Debuggable] public bool IsFalling => _groundedState.IsGrounded == false && Velocity.y < -0.5f;
+        [Debuggable] public bool IsJumping => _groundedState.IsGrounded == false && Velocity.y >  0.5f;
 
-        private bool _isGrounded;
-        [SerializeField, ReadOnly] private Vector3 _movement;
+        private GroundedState _groundedState = new();
+        
+        [SerializeField, ReadOnly] private Vector3 _movementVelocity;
 
         void Awake()
         {
             _anim = GetComponent<Animator>();
-            _controller = GetComponent<CharacterController>();
+            // _controller = GetComponent<CharacterController>();
+            _rb = GetComponent<Rigidbody>();
+            _collider = GetComponent<CapsuleCollider>();
         }
 
         void Start()
         {
             _camera = Camera.main;
+
+            _lastPosition = transform.position;
         }
 
         void OnEnable()
@@ -80,16 +119,17 @@ namespace UntitledRPG.Actor
             Velocity = (transform.position - _lastPosition) / Time.deltaTime;
             _lastPosition = transform.position;
 
-            _isGrounded = CheckGrounded();
+            CheckGrounded3(); // TODO: should this be in fixed update..?
 
-            CalculateHorizontalMovement();
-            CalculateVerticalMovement();
+            var horizontalMovement = CalculateHorizontalMovement();
+            var verticalMovement = CalculateVerticalMovement();
 
-            Move();
+            Move(horizontalMovement * Time.deltaTime);
+            Move(verticalMovement * Time.deltaTime);
 
             // set animations
             _anim.SetBool("IsGrounded", IsGrounded);
-            _anim.SetBool("IsFalling", IsFalling);
+            _anim.SetBool("IsFalling", IsFalling || IsSliding);
             _anim.SetBool("IsJumping", IsJumping);
 
             var horizontalSpeed = Velocity.GetHorizontal().magnitude;
@@ -119,41 +159,31 @@ namespace UntitledRPG.Actor
             return inputDirection.normalized;
         }
 
-        public void CalculateHorizontalMovement()
+        public Vector3 CalculateHorizontalMovement()
         {
             var inputDirection = CalculateInputDirection();
 
-            // project input movement onto the XZ plane
-            var adjustedMovement = MoveInput.sqrMagnitude == 0f ?
-                transform.forward * (inputDirection.magnitude + .01f) :
+            // project input movement onto the ground plane
+            var projectedMovement = IsGrounded ?
+                Vector3.ProjectOnPlane(inputDirection, _groundedState.GroundNormal) :
                 inputDirection;
 
             // look in movement direction
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(adjustedMovement), _rotationSpeed);
+            if (inputDirection.sqrMagnitude != 0)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(inputDirection), _rotationSpeed);
 
-            adjustedMovement *= _moveSpeed;
+            projectedMovement *= _moveSpeed;
 
-            _movement.x = adjustedMovement.x;
-            _movement.z = adjustedMovement.z;
+            return projectedMovement;
         }
         
-        public void CalculateVerticalMovement()
+        public Vector3 CalculateVerticalMovement()
         {
-            if (_isGrounded)
-            {
-                _movement.y = 0f;
-                _timeSinceGrounded = 0f;
+            var movement = new Vector3(0f, _movementVelocity.y, 0f);
 
-                // check jump
-                if (JumpInput && (_timeSinceGrounded <= _coyoteTime /* || TODO: Jump Buffer */))
-                {
-                    _endJumpEarly = false;
-
-                    _movement.y = _jumpHeight;
-                }
-            }
-            else
+            if (IsGrounded == false || IsSliding)
             {
+                // falling
                 if (JumpInput == false && _endJumpEarly == false && Velocity.y > 0)
                 {
                     _endJumpEarly = true;
@@ -162,16 +192,78 @@ namespace UntitledRPG.Actor
                 _timeSinceGrounded += Time.deltaTime;
 
                 // apply gravity
-                var fallSpeed = _endJumpEarly && _movement.y > 0 ? _constGravity * 4f : _constGravity;
-                
-                _movement.y -= fallSpeed * Time.deltaTime;
-                _movement.y = Mathf.Max(_movement.y, -_maxFallSpeed);
+                if (_useVariableJump)
+                {
+                    var fallSpeed = _endJumpEarly && movement.y > 0 ? _gravity * 4f : _gravity;
+
+                    movement.y += -fallSpeed * Time.deltaTime; // Mathf.Max(movement.y - fallSpeed * Time.deltaTime, -_maxFallSpeed);
+                }
+                else
+                {
+                    movement.y += -_gravity * Time.deltaTime;
+                }
             }
+            // else if (IsSliding)
+            // {
+            //     if (JumpInput == false && _endJumpEarly == false && Velocity.y > 0)
+            //     {
+            //         _endJumpEarly = true;
+            //     }
+            //
+            //     _timeSinceGrounded += Time.deltaTime;
+            //
+            //     // apply gravity
+            //     var fallSpeed = _constGravity; //_endJumpEarly && movement.y > 0 ? _constGravity * 4f : _constGravity;
+            //
+            //     movement.y = Mathf.Max(movement.y - fallSpeed * Time.deltaTime, -_maxFallSpeed);
+            // }
+            else // IsGrounded 
+            {
+                movement.y = 0f;
+                _timeSinceGrounded = 0f;
+
+                // check jump
+                if (JumpInput && (_timeSinceGrounded <= _coyoteTime /* || TODO: Jump Buffer */))
+                {
+                    _endJumpEarly = false;
+
+                    movement.y = _jumpVelocity;
+                }
+            }
+
+            _movementVelocity.y = movement.y;
+
+            return movement;
         }
 
-        public void Move()
+        public void Move(Vector3 movement)
         {
-            _controller.Move(_movement * Time.deltaTime);
+            var position = transform.position;
+
+            var movementDist = movement.magnitude;
+
+            if (CastSelf(position, movement.normalized, movement.magnitude, out var hit))
+            {
+                if (hit.distance == 0)
+                    return;
+
+                // hit something
+
+                position += movement * (hit.distance / movementDist) + hit.normal * 0.001f * 2;
+                
+                movement *= (1 - hit.distance / movementDist);
+
+                movement -= hit.normal * Vector3.Dot(movement, hit.normal);
+
+                position += Vector3.ProjectOnPlane(movement, hit.normal).normalized * movement.magnitude;
+            }
+            else
+            {
+                // didn't hit anything, we can move
+                position += movement;
+            }
+
+            transform.position = position;
         }
 
         /// <summary>
@@ -189,20 +281,62 @@ namespace UntitledRPG.Actor
 
         private bool CheckGrounded()
         {
-            var controllerBottom = _controller.bounds.center - new Vector3(0f, _controller.bounds.extents.y, 0f);
+            var controllerBottom = _collider.bounds.center - new Vector3(0f, _collider.bounds.extents.y, 0f);
 
             Debug.DrawRay(controllerBottom, Vector3.down * 0.1f);
 
             return Physics.Raycast(controllerBottom, Vector3.down, 0.1f);
         }
 
+        private void CheckGrounded2()
+        {
+            var controllerBottom = _collider.bounds.center - new Vector3(0f, _collider.bounds.extents.y, 0f);
+
+            var isGrounded = Physics.Raycast(controllerBottom, Vector3.down, out var hitInfo, _groundCheckDist);
+            
+            // debug
+            Debug.DrawRay(controllerBottom, Vector3.down * _groundCheckDist, Color.green);
+            if (isGrounded)
+                DebugDrawHelper.DrawSphere(hitInfo.point, 0.05f, Color.green, quality: 1);
+
+            _groundedState = new GroundedState(isGrounded, hitInfo.normal, hitInfo.point, hitInfo.distance, hitInfo.collider?.gameObject);
+        }
+
+        private void CheckGrounded3()
+        {
+            var isGrounded = CastSelf(transform.position, Vector3.down, _groundCheckDist, out var hit);
+
+            // debug 
+            if (isGrounded)
+                DebugDrawHelper.DrawSphere(hit.point, 0.05f, Color.green, quality: 1);
+
+            _groundedState = new GroundedState(isGrounded, hit.normal, hit.point, hit.distance, hit.collider?.gameObject);
+        }
         private bool CheckAbove()
         {
-            var controllerTop = _controller.bounds.center + new Vector3(0f, _controller.bounds.extents.y, 0f);
-
+            var controllerTop = _collider.bounds.center + new Vector3(0f, _collider.bounds.extents.y, 0f);
             Debug.DrawRay(controllerTop, Vector3.up * 0.1f);
-
             return Physics.Raycast(controllerTop, Vector3.down, 0.1f);
+        }
+
+        private bool CastSelf(Vector3 pos, Vector3 dir, float dist, out RaycastHit hit)
+        {
+            var center = _collider.center + pos;
+            var radius = _collider.radius;
+            var height = _collider.height;
+
+            // Get top and bottom points of collider
+            var bottom = center + Vector3.down * (height / 2 - radius);
+            var top = center + Vector3.up * (height / 2 - radius);
+
+            var hits = Physics.CapsuleCastAll(top, bottom, _collider.radius, dir, dist)
+                .Where(x => x.transform != transform);
+            var hitAny = hits.Any();
+
+            var minDist = hitAny ? hits.Select(x => x.distance).Min () : 0f;
+            hit = hits.FirstOrDefault(x => x.distance == minDist);
+
+            return hitAny;
         }
 
         #endregion

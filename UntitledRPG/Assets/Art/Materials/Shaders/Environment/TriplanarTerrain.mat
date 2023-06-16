@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TriplanarTerrain
-  m_Shader: {fileID: -6465566751694194690, guid: ba2c9847b8185b54e82d7c5a6b268a3d,
+  m_Shader: {fileID: -6465566751694194690, guid: c95b5fcaa36d70e4fac8828a623a071e,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -24,8 +24,24 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Side_Albedo:
+        m_Texture: {fileID: 2800000, guid: 3b61d1ad07f1a7145a313d3ec79deb9c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Side_Normal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainLitSubgraph_f72a1f05f96a4c91b186e28253f57d6b_BaseNormal_317969641:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_49a7a0dc35ae46fea206e967d93b2022_Out_0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Top_Albedo:
-        m_Texture: {fileID: 2800000, guid: cdab33d78188b354f920bca49f32bb72, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7bca0541e956e9247bc28fe7ec1fb3cb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Top_Normal:
@@ -48,7 +64,12 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    m_Colors: []
+    - _Triplanar_Blend: 25
+    m_Colors:
+    - _Base_Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _Base_Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _Blend: {r: 0.3, g: 0.7, b: 0, a: 0}
+    - _Smoothstep_Blend: {r: 0.5, g: 0.6, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4091791393997029374
 MonoBehaviour:
