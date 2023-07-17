@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Side_Albedo:
-        m_Texture: {fileID: 2800000, guid: 3b61d1ad07f1a7145a313d3ec79deb9c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5dd7ebf8c97ae7c49a302a32e4c60d12, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Side_Normal:
@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Top_Albedo:
-        m_Texture: {fileID: 2800000, guid: 7bca0541e956e9247bc28fe7ec1fb3cb, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7faf910aab7e29e48ac0eea9f06cd75c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Top_Normal:
@@ -62,6 +62,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Paint_on_Side: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Triplanar_Blend: 25
@@ -69,7 +70,9 @@ Material:
     - _Base_Offset: {r: 0, g: 0, b: 0, a: 0}
     - _Base_Tiling: {r: 1, g: 1, b: 0, a: 0}
     - _Blend: {r: 0.3, g: 0.7, b: 0, a: 0}
-    - _Smoothstep_Blend: {r: 0.5, g: 0.6, b: 0, a: 0}
+    - _Side_Tiling: {r: 0.0625, g: 0.03125, b: 0, a: 0}
+    - _Smoothstep_Blend: {r: 0.8, g: 0.8, b: 0, a: 0}
+    - _Top_Tiling: {r: 0.03125, g: 0.03125, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4091791393997029374
 MonoBehaviour:

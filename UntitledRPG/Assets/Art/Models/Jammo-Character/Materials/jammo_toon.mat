@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: jammo_toon
-  m_Shader: {fileID: -6465566751694194690, guid: 09a3e5e778826214f82f311f4d75b928,
+  m_Shader: {fileID: -6465566751694194690, guid: b6d849502f7bbdd4492b990df9af4399,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -33,7 +33,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
+  m_LockedProperties: _Alpha_Cutoff
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -69,6 +69,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 3a5a871d579c2da4094f823d674595eb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 2800000, guid: 6a0fb4aa4de843c45a776e5a4ac9dd69, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -101,6 +105,9 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _Alpha_Cutoff: 0
+    - _Ambient_Occlusion: 1
+    - _Attenuation_Threshold: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BlendOp: 0
@@ -109,6 +116,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _Darkness: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -117,6 +125,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _MAIN_LIGHT_SHADOWS: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -125,6 +134,8 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SampleGI: 0
+    - _Shadow: 256
+    - _Shadow_Depth: 1
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -138,5 +149,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Highlight_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Shadow_Color: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
