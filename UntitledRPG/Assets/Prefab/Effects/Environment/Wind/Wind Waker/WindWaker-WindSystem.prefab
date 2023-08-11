@@ -32,7 +32,7 @@ Transform:
   - {fileID: 6066250748114841001}
   - {fileID: 187004010409668037}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &470192809524486946
 MonoBehaviour:
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfaf92d8a77109f498957bc523a86b56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WindDirection: {x: 0, y: -38.6, z: 0}
+  WindDirection: {x: 0, y: 0, z: 0}
   WindArea: {x: 80, y: 15, z: 80}
 --- !u!1001 &3036388663861369510
 PrefabInstance:
@@ -64,7 +64,7 @@ PrefabInstance:
     - target: {fileID: 2934997095556347747, guid: 59aa683a6aad4cc40b2c52fb2b4f42b8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 12.9
       objectReference: {fileID: 0}
     - target: {fileID: 2934997095556347747, guid: 59aa683a6aad4cc40b2c52fb2b4f42b8,
         type: 3}
@@ -79,7 +79,7 @@ PrefabInstance:
     - target: {fileID: 2934997095556347747, guid: 59aa683a6aad4cc40b2c52fb2b4f42b8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.943801
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2934997095556347747, guid: 59aa683a6aad4cc40b2c52fb2b4f42b8,
         type: 3}
@@ -89,7 +89,7 @@ PrefabInstance:
     - target: {fileID: 2934997095556347747, guid: 59aa683a6aad4cc40b2c52fb2b4f42b8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.33051437
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2934997095556347747, guid: 59aa683a6aad4cc40b2c52fb2b4f42b8,
         type: 3}
@@ -143,7 +143,7 @@ PrefabInstance:
     - target: {fileID: 2934997095556347747, guid: 8316405bf7512334589504f548a4a3a4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 12.9
       objectReference: {fileID: 0}
     - target: {fileID: 2934997095556347747, guid: 8316405bf7512334589504f548a4a3a4,
         type: 3}
@@ -158,7 +158,7 @@ PrefabInstance:
     - target: {fileID: 2934997095556347747, guid: 8316405bf7512334589504f548a4a3a4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.943801
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2934997095556347747, guid: 8316405bf7512334589504f548a4a3a4,
         type: 3}
@@ -168,7 +168,7 @@ PrefabInstance:
     - target: {fileID: 2934997095556347747, guid: 8316405bf7512334589504f548a4a3a4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.33051437
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2934997095556347747, guid: 8316405bf7512334589504f548a4a3a4,
         type: 3}
@@ -194,11 +194,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: windy wind
-      objectReference: {fileID: 0}
-    - target: {fileID: 5832818601839793078, guid: 8316405bf7512334589504f548a4a3a4,
-        type: 3}
-      propertyPath: TrailModule.widthOverTrail.scalar
-      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

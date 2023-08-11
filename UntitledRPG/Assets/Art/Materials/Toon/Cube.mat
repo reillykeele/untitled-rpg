@@ -48,7 +48,7 @@ Material:
     m_Floats:
     - _Alpha_Cutoff: 0
     - _Ambient_Occlusion: 0
-    - _Attenuation_Threshold: 1
+    - _Attenuation_Threshold: 0.968
     - _Darkness: 0
     - _QueueControl: 0
     - _QueueOffset: 0

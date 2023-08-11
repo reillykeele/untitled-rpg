@@ -41,7 +41,7 @@ Material:
     - _Displacement_Strength: 0.344
     - _Displacment_Noise_Scale: 1.2
     - _Foam_Cutoff: 0.75
-    - _Foam_Distance: 5
+    - _Foam_Distance: 3
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Wave_Height: 1

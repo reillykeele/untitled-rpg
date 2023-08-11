@@ -132,11 +132,11 @@ namespace UntitledRPG.Actor
             _anim.SetBool("IsFalling", IsFalling || IsSliding);
             _anim.SetBool("IsJumping", IsJumping);
 
-            var horizontalSpeed = Velocity.GetHorizontal().magnitude;
+            var horizontalSpeed = Velocity.GetXZ().magnitude;
             if (horizontalSpeed == 0)
                 _anim.SetFloat("HorizontalVelocity", 0f, _stopAnimTime, Time.deltaTime);
             else
-                _anim.SetFloat("HorizontalVelocity", Velocity.GetHorizontal().magnitude, _startAnimTime, Time.deltaTime);
+                _anim.SetFloat("HorizontalVelocity", Velocity.GetXZ().magnitude, _startAnimTime, Time.deltaTime);
             
             // _anim.SetFloat("VerticalVelocity", Velocity.y);
         }
